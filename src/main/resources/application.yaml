@@ -1,3 +1,34 @@
 spring:
   application:
     name: library-management-backend
+  datasource:
+    url: jdbc:postgresql://ep-proud-cake-anyajx7f-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channelBinding=require
+    username: neondb_owner
+    password: npg_4x0zcAjpRroH
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+  jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+
+  main:
+    # Turns off the Spring ASCII Art
+    banner-mode: "off"
+    # Optional: Silences startup info logs but keeps errors
+    log-startup-info: false
+
+logging:
+  level:
+    # Root level WARN silences the generic Spring/Hibernate/Tomcat logs
+    root: WARN
+    # Keep your specific package at INFO so you can see your own logs
+    mayur.dev.book_management_system : INFO
+    # Silences the specific "Bean successfully defined" spam
+    org.springframework.web: WARN

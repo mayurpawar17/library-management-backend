@@ -2,6 +2,8 @@ package dev.mayur.librarymanagement.features.book.dto;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import lombok.*;
 
 @Getter
@@ -21,12 +23,15 @@ public class BookRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private BigDecimal price;
 
-    @NotNull(message = "Stock is required")
-    @Min(value = 0, message = "Stock cannot be negative")
-    private Integer stock;
 
-    private String description;
+    private String isbn;
 
-    private Long categoryId; // if you have category module
+//    @NotNull(message = "Stock is required")
+//    @Min(value = 0, message = "Stock cannot be negative")
+//    private Integer stock;
+//
+//    private String description;
+//
+//    private Long categoryId; // if you have category module
     
 }

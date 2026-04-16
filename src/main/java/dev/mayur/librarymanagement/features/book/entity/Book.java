@@ -1,5 +1,6 @@
 package dev.mayur.librarymanagement.features.book.entity;
 
+import dev.mayur.librarymanagement.features.category.entity.Category;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -46,5 +47,9 @@ public class Book {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id") // This is the Foreign Key
+    private Category category;
 
 }

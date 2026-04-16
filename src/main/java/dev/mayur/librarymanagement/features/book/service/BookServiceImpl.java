@@ -5,23 +5,29 @@ import dev.mayur.librarymanagement.features.book.dto.BookRequest;
 import dev.mayur.librarymanagement.features.book.dto.BookResponse;
 import dev.mayur.librarymanagement.features.book.entity.Book;
 import dev.mayur.librarymanagement.features.book.repository.BookRepository;
+import dev.mayur.librarymanagement.features.category.dto.CategoryResponse;
+import dev.mayur.librarymanagement.features.category.entity.Category;
+import dev.mayur.librarymanagement.features.category.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
 
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, CategoryRepository categoryRepository) {
         this.bookRepository = bookRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public BookResponse createBook(BookRequest bookRequest) {
+        // 1. Find the category first
+        Category category = categoryRepository.findById(bookRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
 
         boolean exists = bookRepository.existsByTitleAndAuthor(bookRequest.getTitle(), bookRequest.getAuthor());
 
@@ -39,6 +45,7 @@ public class BookServiceImpl implements BookService {
         book.setDeletedAt(null);
         book.setCreatedAt(LocalDateTime.now());
         book.setUpdatedAt(LocalDateTime.now());
+        book.setCategory(category); // Set the entity relationship
         Book savedBook = bookRepository.save(book);
         return mapToResponse(savedBook);
     }
@@ -73,6 +80,9 @@ public class BookServiceImpl implements BookService {
         existingBook.setIsbn(bookRequest.getIsbn());
         existingBook.setUpdatedAt(LocalDateTime.now());
 
+        Category category = categoryRepository.findById(bookRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found with id: " + bookRequest.getCategoryId()));
+        existingBook.setCategory(category);
+
         bookRepository.save(existingBook);
         return mapToResponse(existingBook);
     }
@@ -90,8 +100,7 @@ public class BookServiceImpl implements BookService {
     }
 
     public void restoreBook(Long id) {
-        Book book = bookRepository.findByIdIncludingDeleted(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+        Book book = bookRepository.findByIdIncludingDeleted(id).orElseThrow(() -> new RuntimeException("Book not found"));
 
         if (book.getDeletedAt() == null) {
             throw new RuntimeException("Book is not deleted");
@@ -104,6 +113,11 @@ public class BookServiceImpl implements BookService {
 
     // Manual Mapper (Use MapStruct in production for true scalability)
     private BookResponse mapToResponse(Book book) {
-        return new BookResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getPrice(), book.getIsbn(), book.getCreatedAt(), book.getUpdatedAt());
+        CategoryResponse categoryDto = null;
+
+        if (book.getCategory() != null) {
+            categoryDto = new CategoryResponse(book.getCategory().getId(), book.getCategory().getName());
+        }
+        return new BookResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getPrice(), book.getIsbn(), book.getCreatedAt(), book.getUpdatedAt(), categoryDto);
     }
 }

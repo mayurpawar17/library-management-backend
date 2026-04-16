@@ -1,11 +1,13 @@
 package dev.mayur.librarymanagement.features.book.dto;
 
+import dev.mayur.librarymanagement.features.category.dto.CategoryResponse;
+import dev.mayur.librarymanagement.features.category.entity.Category;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Getter
 @Setter
@@ -18,4 +20,5 @@ public class BookResponse {
     private String isbn;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    CategoryResponse category;
 }

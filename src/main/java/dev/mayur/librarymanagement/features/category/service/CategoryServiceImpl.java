@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponse> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
-        return categoryMapper.toResponse(categories);
+        return categoryMapper.toResponseList(categories);
     }
 
     @Override

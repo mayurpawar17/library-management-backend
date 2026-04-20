@@ -1,4 +1,4 @@
-package dev.mayur.librarymanagement.core;
+package dev.mayur.librarymanagement.core.dto;
 
 import lombok.*;
 

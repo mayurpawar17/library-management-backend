@@ -1,6 +1,6 @@
 package dev.mayur.librarymanagement.features.category.controller;
 
-import dev.mayur.librarymanagement.core.ApiResponse;
+import dev.mayur.librarymanagement.core.dto.ApiResponse;
 import dev.mayur.librarymanagement.features.category.dto.CategoryRequest;
 import dev.mayur.librarymanagement.features.category.dto.CategoryResponse;
 import dev.mayur.librarymanagement.features.category.service.CategoryService;

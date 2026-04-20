@@ -1,6 +1,6 @@
 package dev.mayur.librarymanagement.exception;
 
-import dev.mayur.librarymanagement.core.ApiResponse;
+import dev.mayur.librarymanagement.core.dto.ApiResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

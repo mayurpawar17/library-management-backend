@@ -1,11 +1,12 @@
 package dev.mayur.librarymanagement.features.book.service;
 
+
+import dev.mayur.librarymanagement.core.mapper.BookMapper;
 import dev.mayur.librarymanagement.exception.ResourceNotFoundException;
 import dev.mayur.librarymanagement.features.book.dto.BookRequest;
 import dev.mayur.librarymanagement.features.book.dto.BookResponse;
 import dev.mayur.librarymanagement.features.book.entity.Book;
 import dev.mayur.librarymanagement.features.book.repository.BookRepository;
-import dev.mayur.librarymanagement.features.category.dto.CategoryResponse;
 import dev.mayur.librarymanagement.features.category.entity.Category;
 import dev.mayur.librarymanagement.features.category.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,12 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
+    private final BookMapper bookMapper;
 
-    public BookServiceImpl(BookRepository bookRepository, CategoryRepository categoryRepository) {
+    public BookServiceImpl(BookRepository bookRepository, CategoryRepository categoryRepository, BookMapper bookMapper) {
         this.bookRepository = bookRepository;
         this.categoryRepository = categoryRepository;
+        this.bookMapper = bookMapper;
     }
 
     @Override
@@ -37,7 +40,6 @@ public class BookServiceImpl implements BookService {
 
         // Create a new Entity instance
         Book book = new Book();
-
         book.setTitle(bookRequest.getTitle());
         book.setAuthor(bookRequest.getAuthor());
         book.setPrice(bookRequest.getPrice());
@@ -47,7 +49,7 @@ public class BookServiceImpl implements BookService {
         book.setUpdatedAt(LocalDateTime.now());
         book.setCategory(category); // Set the entity relationship
         Book savedBook = bookRepository.save(book);
-        return mapToResponse(savedBook);
+        return bookMapper.toResponse(savedBook);
     }
 
     @Override
@@ -56,13 +58,13 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("Invalid Book ID provided.");
         }
         Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book " + "with id " + id + " not found"));
-        return mapToResponse(book);
+        return bookMapper.toResponse(book);
     }
 
     @Override
     public List<BookResponse> getAllBooks() {
-        return bookRepository.findByDeletedAtIsNull().stream().map(this::mapToResponse).toList();
-//        return bookRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+        List<Book> books = bookRepository.findByDeletedAtIsNull();
+        return bookMapper.toResponseList(books);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class BookServiceImpl implements BookService {
         existingBook.setCategory(category);
 
         bookRepository.save(existingBook);
-        return mapToResponse(existingBook);
+        return bookMapper.toResponse(existingBook);
     }
 
     @Override
@@ -111,13 +113,4 @@ public class BookServiceImpl implements BookService {
     }
 
 
-    // Manual Mapper (Use MapStruct in production for true scalability)
-    private BookResponse mapToResponse(Book book) {
-        CategoryResponse categoryDto = null;
-
-        if (book.getCategory() != null) {
-            categoryDto = new CategoryResponse(book.getCategory().getId(), book.getCategory().getName());
-        }
-        return new BookResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getPrice(), book.getIsbn(), book.getCreatedAt(), book.getUpdatedAt(), categoryDto);
-    }
 }

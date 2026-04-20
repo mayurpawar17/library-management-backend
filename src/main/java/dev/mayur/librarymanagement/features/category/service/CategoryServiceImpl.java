@@ -1,47 +1,49 @@
 package dev.mayur.librarymanagement.features.category.service;
 
+import dev.mayur.librarymanagement.core.mapper.CategoryMapper;
 import dev.mayur.librarymanagement.features.category.dto.CategoryRequest;
 import dev.mayur.librarymanagement.features.category.dto.CategoryResponse;
 import dev.mayur.librarymanagement.features.category.entity.Category;
 import dev.mayur.librarymanagement.features.category.repository.CategoryRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
+        this.categoryRepository = categoryRepository;
+        this.categoryMapper = categoryMapper;
+    }
 
     @Override
     public CategoryResponse createCategory(CategoryRequest request) {
         Category category = new Category();
         category.setName(request.name());
         Category saved = categoryRepository.save(category);
-        return mapToResponse(saved);
+        return categoryMapper.toResponse(saved);
     }
 
     @Override
     public List<CategoryResponse> getAllCategories() {
-        return categoryRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .toList();
+        List<Category> categories = categoryRepository.findAll();
+        return categoryMapper.toResponse(categories);
     }
 
     @Override
     public CategoryResponse getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-        return mapToResponse(category);
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+        return categoryMapper.toResponse(category);
     }
 
     @Override
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
         category.setName(request.name());
-        return mapToResponse(categoryRepository.save(category));
+        return categoryMapper.toResponse(categoryRepository.save(category));
     }
 
     @Override
@@ -52,7 +54,4 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    private CategoryResponse mapToResponse(Category category) {
-        return new CategoryResponse(category.getId(), category.getName());
-    }
 }

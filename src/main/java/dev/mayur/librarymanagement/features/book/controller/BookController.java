@@ -4,6 +4,7 @@ import dev.mayur.librarymanagement.core.ApiResponse;
 import dev.mayur.librarymanagement.features.book.dto.BookRequest;
 import dev.mayur.librarymanagement.features.book.dto.BookResponse;
 import dev.mayur.librarymanagement.features.book.service.BookServiceImpl;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class BookController {
     }
 
     @GetMapping
+    @Transactional
     public ResponseEntity<ApiResponse<List<BookResponse>>> getAllBooks() {
         List<BookResponse> data = bookService.getAllBooks();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Books retrieved successfully", data));

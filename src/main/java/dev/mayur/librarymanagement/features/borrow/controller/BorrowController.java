@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -23,7 +22,6 @@ public class BorrowController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<BorrowResponse>> borrowBook(@RequestBody BorrowRequest borrowRequest) {
-
         BorrowResponse data = borrowService.borrowBook(borrowRequest);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Book borrowed successfully", data));
     }
@@ -36,8 +34,8 @@ public class BorrowController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<BorrowResponse>>> getUserBorrows(@PathVariable Long userId) {
-        List<BorrowResponse> data=borrowService.getUserBorrows(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User borrow list",  data));
+        List<BorrowResponse> data = borrowService.getUserBorrows(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User borrow list", data));
 
     }
 }

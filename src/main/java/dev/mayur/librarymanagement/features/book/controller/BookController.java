@@ -1,11 +1,14 @@
 package dev.mayur.librarymanagement.features.book.controller;
 
+import dev.mayur.librarymanagement.core.dto.ApiPaginationResponse;
 import dev.mayur.librarymanagement.core.dto.ApiResponse;
+import dev.mayur.librarymanagement.core.dto.Pagination;
 import dev.mayur.librarymanagement.features.book.dto.BookRequest;
 import dev.mayur.librarymanagement.features.book.dto.BookResponse;
 import dev.mayur.librarymanagement.features.book.service.BookServiceImpl;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +35,20 @@ public class BookController {
 
     @GetMapping
     @Transactional
-    public ResponseEntity<ApiResponse<List<BookResponse>>> getAllBooks() {
-        List<BookResponse> data = bookService.getAllBooks();
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Books retrieved successfully", data));
+    public ResponseEntity<ApiPaginationResponse<List<BookResponse>>> getAllBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Page<BookResponse> data = bookService.getAllBooks(page, size);
+//        List<BookResponse> data = bookService.getAllBooks();
+
+
+        Pagination<BookResponse> pagination = new Pagination<>();
+        pagination.setPage(data.getNumber());
+        pagination.setSize(data.getSize());
+        pagination.setTotalElements(data.getTotalElements());
+        pagination.setTotalPages(data.getTotalPages());
+        pagination.setLast(data.isLast());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiPaginationResponse.success("Books retrieved successfully", data.getContent(), pagination));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BookResponse>> getBookById(@PathVariable Long id) {

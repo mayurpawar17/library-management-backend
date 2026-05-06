@@ -9,6 +9,10 @@ import dev.mayur.librarymanagement.features.book.entity.Book;
 import dev.mayur.librarymanagement.features.book.repository.BookRepository;
 import dev.mayur.librarymanagement.features.category.entity.Category;
 import dev.mayur.librarymanagement.features.category.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -62,10 +66,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponse> getAllBooks() {
-        List<Book> books = bookRepository.findByDeletedAtIsNull();
-        return bookMapper.toResponseList(books);
+    public Page<BookResponse> getAllBooks(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Book> bookPage;
+        bookPage = bookRepository.findByDeletedAtIsNull(pageable);
+//        return bookMapper.toResponseList(bookPage);
+        return bookPage.map(bookMapper::toResponse);
     }
+
 
     @Override
     public BookResponse updateBook(Long id, BookRequest bookRequest) {

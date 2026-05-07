@@ -1,0 +1,4 @@
+### GET request to example server
+GET https://enticing-entail-overpay.ngrok-free.dev/api/v1/health
+
+###

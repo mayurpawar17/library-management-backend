@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/borrows")
+@RequestMapping("/api/v1/borrow")
 public class BorrowController {
 
     private final BorrowServiceImpl borrowService;

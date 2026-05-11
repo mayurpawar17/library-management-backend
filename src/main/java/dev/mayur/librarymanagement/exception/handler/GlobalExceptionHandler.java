@@ -1,8 +1,9 @@
-package dev.mayur.librarymanagement.exception;
+package dev.mayur.librarymanagement.exception.handler;
 
 import dev.mayur.librarymanagement.core.dto.ApiResponse;
+import dev.mayur.librarymanagement.exception.base.BaseApiException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,11 +18,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     // Handle duplicate book (your case)
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException ex) {
-        ApiResponse<Void> response = ApiResponse.error(ex.getMessage());
-        // return Map.of("error", ex.getMessage());
-
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiResponse<Void>> handleRuntimeException(BaseApiException ex, HttpServletRequest request) {
+        return  ResponseEntity.status(ex.getHttpStatus()).body(ApiResponse.error(ex.getMessage(), ex.getErrorCode()));
     }
 
     // Handle validation errors
@@ -42,18 +40,5 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Map<String, String> handleDuplicate(DataIntegrityViolationException ex) {
         return Map.of("error", "Duplicate book not allowed");
-    }
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex) {
-        ApiResponse<Void> response = ApiResponse.error(ex.getMessage());
-        // Return 404 Not Found status with your custom body
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBadRequest(IllegalArgumentException ex) {
-        ApiResponse<Void> response = ApiResponse.error(ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

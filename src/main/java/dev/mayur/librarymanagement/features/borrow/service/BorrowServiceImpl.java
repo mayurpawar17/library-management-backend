@@ -8,8 +8,8 @@ import dev.mayur.librarymanagement.features.borrow.dto.BorrowRequest;
 import dev.mayur.librarymanagement.features.borrow.dto.BorrowResponse;
 import dev.mayur.librarymanagement.features.borrow.entity.Borrow;
 import dev.mayur.librarymanagement.features.borrow.repository.BorrowRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;

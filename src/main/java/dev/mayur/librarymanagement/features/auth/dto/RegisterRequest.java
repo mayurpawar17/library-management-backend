@@ -25,5 +25,5 @@ public class RegisterRequest {
 
     // Role is optional — defaults to MEMBER if not provided
     // Admin accounts should be created carefully, not by open registration
-    private Role role = Role.ROLE_MEMBER;
+    private Role role = Role.MEMBER;
 }

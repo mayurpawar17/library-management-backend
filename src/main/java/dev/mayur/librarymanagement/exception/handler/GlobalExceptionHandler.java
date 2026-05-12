@@ -17,7 +17,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // Handle duplicate book (your case)
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(BaseApiException.class)
     public ResponseEntity<ApiResponse<Void>> handleRuntimeException(BaseApiException ex, HttpServletRequest request) {
         return  ResponseEntity.status(ex.getHttpStatus()).body(ApiResponse.error(ex.getMessage(), ex.getErrorCode()));
     }

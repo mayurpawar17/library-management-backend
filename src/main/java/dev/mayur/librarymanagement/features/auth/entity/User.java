@@ -47,7 +47,9 @@ public class User implements UserDetails {
         // Spring Security needs a list of GrantedAuthority objects
         // SimpleGrantedAuthority wraps our role string (e.g. "ROLE_ADMIN")
         // @PreAuthorize("hasRole('ADMIN')") checks for "ROLE_ADMIN" internally
-        return List.of(new SimpleGrantedAuthority(role.name()));
+//        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name())
+        );
     }
 
     @Override

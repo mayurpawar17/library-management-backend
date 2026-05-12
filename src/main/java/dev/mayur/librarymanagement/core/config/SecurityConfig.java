@@ -69,13 +69,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
 
                         // ── Book endpoints ───────────────────────────────────────
-                        .requestMatchers(HttpMethod.GET, "/api/v1/books/**").authenticated().requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("ADMIN").requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("ADMIN").requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/books/**").authenticated().requestMatchers(HttpMethod.POST, "/api/v1/books/**").hasRole("ADMIN").requestMatchers(HttpMethod.PUT, "/api/v1/books/**").hasRole("ADMIN").requestMatchers(HttpMethod.DELETE, "/api/v1/books/**").hasRole("ADMIN")
 
                         // ── Member endpoints ─────────────────────────────────────
-                        .requestMatchers(HttpMethod.GET, "/api/v1/members").hasRole("ADMIN").requestMatchers(HttpMethod.GET, "/api/members/**").authenticated().requestMatchers(HttpMethod.POST, "/api/members/**").hasRole("ADMIN").requestMatchers(HttpMethod.PUT, "/api/members/**").authenticated().requestMatchers(HttpMethod.DELETE, "/api/members/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/members").hasRole("ADMIN").requestMatchers(HttpMethod.GET, "/api/v1/members/**").authenticated().requestMatchers(HttpMethod.POST, "/api/v1/members/**").hasRole("ADMIN").requestMatchers(HttpMethod.PUT, "/api/v1/members/**").authenticated().requestMatchers(HttpMethod.DELETE, "/api/members/**").hasRole("ADMIN")
 
                         // ── Borrow endpoints ─────────────────────────────────────
-                        .requestMatchers(HttpMethod.GET, "/api/v1/borrow").hasRole("ADMIN").requestMatchers(HttpMethod.GET, "/api/borrow/**").authenticated().requestMatchers(HttpMethod.POST, "/api/borrow/**").authenticated().requestMatchers(HttpMethod.PUT, "/api/borrow/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/borrow").hasRole("ADMIN").requestMatchers(HttpMethod.GET, "/api/v1/borrow/**").authenticated().requestMatchers(HttpMethod.POST, "/api/v1/borrow/**").authenticated().requestMatchers(HttpMethod.PUT, "/api/v1/borrow/**").authenticated()
 
                         // anything else requires login
                         .anyRequest().authenticated())
@@ -84,7 +84,8 @@ public class SecurityConfig {
 
                 // ── Temporary basic auth for testing ────────────────────────
                 // Remove this when you add JWT — JWT filter replaces this
-                .httpBasic(org.springframework.security.config.Customizer.withDefaults());
+//                .httpBasic(org.springframework.security.config.Customizer.withDefaults());
+                .formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();
     }

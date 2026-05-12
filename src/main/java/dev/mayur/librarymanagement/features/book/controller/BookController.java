@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +28,16 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    // ADMIN only
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<BookResponse>> createBook(@Valid @RequestBody BookRequest request) {
         BookResponse data = bookService.createBook(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Book created successfully", data));
     }
 
+    // ADMIN and MEMBER
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEMBER')")
     @GetMapping
     @Transactional
     public ResponseEntity<ApiPaginationResponse<List<BookResponse>>> getAllBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
@@ -49,25 +54,33 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiPaginationResponse.success("Books retrieved successfully", data.getContent(), pagination));
     }
 
-
+    // ADMIN and MEMBER
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEMBER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BookResponse>> getBookById(@PathVariable Long id) {
         BookResponse data = bookService.getBookById(id);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Book retrieved successfully", data));
     }
 
+
+    // ADMIN only
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<BookResponse>> updateBook(@PathVariable Long id, @RequestBody BookRequest bookRequest) {
         BookResponse data = bookService.updateBook(id, bookRequest);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Book updated successfully", data));
     }
 
+    // ADMIN only
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Book Deleted Successfully", null));
     }
 
+    // ADMIN only
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/restore")
     public ResponseEntity<ApiResponse<Void>> restoreBook(@PathVariable Long id) {
         bookService.restoreBook(id);

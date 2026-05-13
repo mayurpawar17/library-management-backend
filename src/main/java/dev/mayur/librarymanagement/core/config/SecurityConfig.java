@@ -1,6 +1,7 @@
 package dev.mayur.librarymanagement.core.config;
 
 import dev.mayur.librarymanagement.exception.auth.CustomAuthEntryPoint;
+import dev.mayur.librarymanagement.exception.handler.CustomAccessDeniedHandler;
 import dev.mayur.librarymanagement.features.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserRepository userRepository;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+
 
     // BCrypt password hashing — never store plain text passwords
     @Bean
@@ -80,7 +83,7 @@ public class SecurityConfig {
                         // anything else requires login
                         .anyRequest().authenticated())
 
-                .authenticationProvider(authenticationProvider())
+                .authenticationProvider(authenticationProvider()).exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler))
 
                 // ── Temporary basic auth for testing ────────────────────────
                 // Remove this when you add JWT — JWT filter replaces this

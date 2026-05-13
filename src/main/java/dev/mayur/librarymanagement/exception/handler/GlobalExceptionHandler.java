@@ -4,11 +4,14 @@ import dev.mayur.librarymanagement.core.dto.ApiResponse;
 import dev.mayur.librarymanagement.exception.base.BaseApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,4 +44,16 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleDuplicate(DataIntegrityViolationException ex) {
         return Map.of("error", "Duplicate book not allowed");
     }
+
+    //handle security exceptions (403)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDenied(AccessDeniedException ex) {
+        ApiResponse<Void> response = ApiResponse.error(
+                "Access Denied: " + ex.getMessage(),
+                "AUTH_FORBIDDEN"
+        );
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
 }
+
+

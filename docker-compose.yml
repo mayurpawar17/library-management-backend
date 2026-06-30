@@ -1,0 +1,22 @@
+services:
+  library-management-postgres-db:
+    image: postgres:latest
+
+    container_name: library-management-postgres-container
+
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: libraryManagementDB
+      TZ: "Asia/Kolkata"
+      PGTZ: "Asia/Kolkata"
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - library_management_postgres_data:/var/lib/postgresql
+
+
+volumes:
+  library_management_postgres_data:
